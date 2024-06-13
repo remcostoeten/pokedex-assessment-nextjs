@@ -24,7 +24,7 @@ Even though the API was local I still opted for a config file with the base URLs
 
 I tend to get creative at random moments so halfway through I suddenly got an aha moment which made me switch from logic to UI work. If I would've started over again I would've finished all logic first and then UI, because knowing me I get carried away with UI and minor details which don't really matter (if there is no ticket, plan, or design for it).
 
-Regarding packages. For basic UI (components/ui) I used some Chakra-UI. Installed Framer Motion but did not even get to doing any fancy animations. Hovering the Pokémon I initially did with Framer Motion but that was a classic example of overengineering. The only real package I used was Sonner, which is (IMO) the best toast API there is.
+Regarding packages. For basic UI (components/ui) I used some ShadCN-ui. Installed Framer Motion but did not even get to doing any fancy animations. Hovering the Pokémon I initially did with Framer Motion but that was a classic example of overengineering. The only real package I used was Sonner, which is (IMO) the best toast API there is.
 
 The Pokémon list is a bit messy and could've been extracted into smaller parts if I had more time. Also, things like a toolbar, search, pagination etc., are missing. But I think the core functionality is there.
 
