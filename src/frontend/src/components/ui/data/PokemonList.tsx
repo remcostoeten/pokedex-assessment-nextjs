@@ -1,8 +1,6 @@
+"use client";
 
-
-'use client';
-
-import {toast} from "sonner";
+import { toast } from "sonner";
 import React, { useEffect, useState } from "react";
 import { Pokemon as PokemonType, typeColors } from "@/core/types/pokemon";
 import Image from "next/image";
@@ -26,10 +24,13 @@ type PokemonListProps = {
 export default function PokemonList({ pokemons }: PokemonListProps) {
   const [caughtPokemons, setCaughtPokemons] = useState<number[]>([]);
   const [imageSrcs, setImageSrcs] = useState<{ [key: number]: string }>(
-    pokemons.reduce((acc, pokemon) => {
-      acc[Number(pokemon.id)] = pokemon.sprites.front_default;
-      return acc;
-    }, {} as { [key: number]: string })
+    pokemons.reduce(
+      (acc, pokemon) => {
+        acc[Number(pokemon.id)] = pokemon.sprites.front_default;
+        return acc;
+      },
+      {} as { [key: number]: string },
+    ),
   );
 
   const handleCatch = (id?: number) => {
@@ -79,10 +80,16 @@ export default function PokemonList({ pokemons }: PokemonListProps) {
                       width={96}
                       height={96}
                       onMouseEnter={() =>
-                        handleMouseEnter(pokemon.id, pokemon.sprites.front_shiny)
+                        handleMouseEnter(
+                          pokemon.id,
+                          pokemon.sprites.front_shiny,
+                        )
                       }
                       onMouseLeave={() =>
-                        handleMouseLeave(pokemon.id, pokemon.sprites.front_default)
+                        handleMouseLeave(
+                          pokemon.id,
+                          pokemon.sprites.front_default,
+                        )
                       }
                       src={imageSrcs[pokemon.id]}
                       alt={`${pokemon.name} front`}
