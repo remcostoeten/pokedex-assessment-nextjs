@@ -1,6 +1,6 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = "http://localhost:5000/api";
 const POKEMON_API_URL = `${API_BASE_URL}/pokemon`;
-const POKEMON_API_ROUTE = '/pokemon';
+const POKEMON_API_ROUTE = "/pokemon";
 
 const GET_POKEMON = `${POKEMON_API_URL}`;
 const GET_POKEMON_BY_ID = `${POKEMON_API_URL}/{id}`;
