@@ -27,7 +27,7 @@ export default function PokemonList({ pokemons }: PokemonListProps) {
   const [caughtPokemons, setCaughtPokemons] = useState<number[]>([]);
   const [imageSrcs, setImageSrcs] = useState<{ [key: number]: string }>(
     pokemons.reduce((acc, pokemon) => {
-      acc[pokemon.id] = pokemon.sprites.front_default;
+      acc[Number(pokemon.id)] = pokemon.sprites.front_default;
       return acc;
     }, {} as { [key: number]: string })
   );

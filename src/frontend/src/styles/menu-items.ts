@@ -6,6 +6,7 @@ export const menuItems = [
   {
     label: "My Pokémon",
     href: "/my-pokemon",
+    disabled: true,
   },
 ];
 

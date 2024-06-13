@@ -16,20 +16,22 @@ export default function Navbar() {
             <div className="flex items-center space-x-4"></div>
             <div className="flex items-center justify-between mt-6">
               <div className="flex items-center space-x-4">
-                {menuItems.map((item) => (
-                  <button key={item.label}>
-                    <Link
-                      href={item.href}
-                      className={
-                        pathname === item.href
-                          ? "text-arcady-accent border-b border-arcady-accent"
-                          : "text-gray-200"
-                      }
-                    >
-                      {item.label}
-                    </Link>
-                  </button>
-                ))}
+              <div className="flex items-center space-x-4">
+  {menuItems.map((item) => (
+    <button key={item.label} disabled={item.disabled}>
+      <Link
+        href={item.href}
+        className={
+          pathname === item.href
+            ? "text-arcady-accent border-b border-arcady-accent"
+            : "text-gray-200"
+        }
+      >
+        {item.label}
+      </Link>
+    </button>
+  ))}
+</div>
               </div>
               {/* auth??
             <div>
