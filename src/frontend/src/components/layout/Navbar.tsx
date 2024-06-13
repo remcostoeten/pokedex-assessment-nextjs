@@ -8,11 +8,11 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col md:flex-row py-4">
-      <div className="md:w-3/4">
+    <nav className="flex flex-col md:flex-row py-4 border-b border-arcady-accent">
+      <div className="container mx-auto">
         <div className="flex  space-x-4">
           <div className="flex  gap-4 container justify-between items-end">
-            {companyLogo({ className: "h-10" })}
+            <Link href="/">{companyLogo({ className: "h-10" })}</Link>
             <div className="flex items-center space-x-4"></div>
             <div className="flex items-center justify-between mt-6">
               <div className="flex items-center space-x-4">
