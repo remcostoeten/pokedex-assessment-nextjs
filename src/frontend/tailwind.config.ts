@@ -19,6 +19,8 @@ const config = {
     },
     extend: {
       colors: {
+        "arcady-accent": "var(--arcady-accent)",
+        "arcady-bg": "var(--arcady-bg)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
