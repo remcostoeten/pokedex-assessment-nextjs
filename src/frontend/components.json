@@ -12,6 +12,6 @@
   },
   "aliases": {
     "components": "@/components",
-    "utils": "@/core/ehlpers/utils"
+    "utils": "@/core/helpersw/utils"
   }
 }
