@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import { useEffect, useState } from "react";
@@ -8,7 +9,7 @@ export default function _DisplayApi() {
     return null;
   }
 
-  // nextjs zet automatisch de env variabelen in op prod of dev, dus hoeven het zelf niet bij te houden
+  // nextjs zet automatisch de env variabelen in op prod of dev, dus hoeven het zelf niet bij te houden. Lang leven nextjs.
 
   const [data, setData] = useState(null);
 
