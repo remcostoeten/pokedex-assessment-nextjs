@@ -1,3 +1,6 @@
+I have the fronten deployed on Vercel... But I have no clue (time rather) to check how to deploy the backend. cloning the repo and running it locally is worth it!
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
