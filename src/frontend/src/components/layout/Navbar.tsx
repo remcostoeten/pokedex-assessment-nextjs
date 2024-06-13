@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { menuItems } from "@/styles/menu-items";
+import { menuItems } from "@/core/menu-items";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
