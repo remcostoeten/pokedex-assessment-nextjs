@@ -351,3 +351,5 @@ MigrationBackup/
 !.env.example
 
 *.vercel*
+.vercel
+.env*.local

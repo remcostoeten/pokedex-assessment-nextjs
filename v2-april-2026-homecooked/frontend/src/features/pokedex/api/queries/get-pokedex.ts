@@ -8,7 +8,8 @@ export const getPokedex = createQuery<CaughtPokemon[]>(() => {
 		return readStaticDemoJson<CaughtPokemon[]>('api/pokedex.json')
 	}
 
-	return PokemonClient().get('/api/pokemon/pokedex', {}, {
+	return PokemonClient().get(
+		'/api/pokemon/pokedex', {}, {
 		next: {
 			tags: ['pokemon:pokedex']
 		}

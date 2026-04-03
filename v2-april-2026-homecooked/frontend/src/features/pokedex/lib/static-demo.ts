@@ -1,13 +1,17 @@
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
+import pokedexJson from '@/features/pokedex/data/pokedex.json'
+import pokemonJson from '@/features/pokedex/data/pokemon.json'
 
 export function isStaticPokedexDemo() {
-	return process.env.NODE_ENV === 'production' && !process.env.POKEDEX_API_URL
+    return process.env.NODE_ENV === 'production' && !process.env.POKEDEX_API_URL
 }
 
 export async function readStaticDemoJson<T>(relativePath: string): Promise<T> {
-	const absolutePath = path.join(process.cwd(), 'public', relativePath)
-	const fileContents = await readFile(absolutePath, 'utf8')
-
-	return JSON.parse(fileContents) as T
+    switch (relativePath) {
+        case 'api/pokedex.json':
+            return pokedexJson as T
+        case 'api/pokemon.json':
+            return pokemonJson as T
+        default:
+            throw new Error(`Unsupported static demo dataset: ${relativePath}`)
+    }
 }
