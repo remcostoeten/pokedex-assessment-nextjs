@@ -1,15 +1,16 @@
-import { getPokemon } from "@/features/pokedex/api/queries/get-pokemon";
+import { Suspense } from 'react'
 
-export async function PokedexView() {
-  const pokemon = await getPokemon();
+import { PokemonFeed } from '@/features/pokedex/components/pokemon-feed'
+import { PokemonSkeleton } from '@/features/pokedex/components/pokemon-skeleton'
 
-  return (
-    <div className="min-h-screen p-6">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-4">
-        <pre className="overflow-x-auto rounded-[16px] border border-border bg-surface p-4 text-sm">
-          {JSON.stringify(pokemon, null, 2)}
-        </pre>
-      </main>
-    </div>
-  );
+export function PokedexView() {
+	return (
+		<div className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+			<main className="mx-auto flex w-full max-w-4xl flex-col">
+				<Suspense fallback={<PokemonSkeleton />}>
+					<PokemonFeed />
+				</Suspense>
+			</main>
+		</div>
+	)
 }
