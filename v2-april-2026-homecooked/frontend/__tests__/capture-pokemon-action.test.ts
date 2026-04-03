@@ -1,11 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { mutationSpy } = vi.hoisted(() => ({
-	mutationSpy: vi.fn()
-}))
+var mutationSpy = vi.fn()
 
 vi.mock('../src/shared/create-mutation', () => ({
-	createMutation: vi.fn(() => mutationSpy)
+	createMutation: vi.fn(() => (...args: Parameters<typeof mutationSpy>) => mutationSpy(...args))
 }))
 
 import { capturePokemonAction } from '../src/features/pokedex/actions/capture-pokemon-action'

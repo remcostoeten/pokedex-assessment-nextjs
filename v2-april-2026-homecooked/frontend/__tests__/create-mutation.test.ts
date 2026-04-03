@@ -1,11 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { revalidateTag } = vi.hoisted(() => ({
-	revalidateTag: vi.fn()
-}))
+var revalidateTag = vi.fn()
 
 vi.mock('next/cache', () => ({
-	revalidateTag
+	revalidateTag: (...args: Parameters<typeof revalidateTag>) => revalidateTag(...args)
 }))
 
 import { createMutation } from '../src/shared/create-mutation'

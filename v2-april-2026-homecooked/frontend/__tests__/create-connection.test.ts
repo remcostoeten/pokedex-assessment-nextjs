@@ -5,23 +5,25 @@ import { createApi } from '../src/shared/api/create-api-connection'
 describe('createApi', () => {
 	const baseUrl = 'http://api.test'
 	const api = createApi({ baseUrl })
+	let fetchMock: ReturnType<typeof vi.fn>
 
 	beforeEach(() => {
-		vi.stubGlobal('fetch', vi.fn())
+		fetchMock = vi.fn()
+		globalThis.fetch = fetchMock as typeof fetch
 	})
 
 	it('should handle successful requests and errors', async () => {
 		const mockData = { id: 1 }
-		vi.mocked(fetch).mockResolvedValueOnce({
+		fetchMock.mockResolvedValueOnce({
 			ok: true,
 			json: async () => mockData
 		} as Response)
 
 		const result = await api.get('/data', { q: 'test' })
 		expect(result).toEqual(mockData)
-		expect(vi.mocked(fetch).mock.calls[0][0].toString()).toContain('q=test')
+		expect(fetchMock.mock.calls[0][0].toString()).toContain('q=test')
 
-		vi.mocked(fetch).mockResolvedValueOnce({
+		fetchMock.mockResolvedValueOnce({
 			ok: false,
 			status: 500,
 			text: async () => 'Server Error'
