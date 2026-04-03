@@ -3,7 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 var mutationSpy = vi.fn()
 
 vi.mock('../src/shared/create-mutation', () => ({
-	createMutation: vi.fn(() => (...args: Parameters<typeof mutationSpy>) => mutationSpy(...args))
+	createMutation: vi.fn(
+		() =>
+			(...args: Parameters<typeof mutationSpy>) =>
+				mutationSpy(...args)
+	)
 }))
 
 import { releasePokemonAction } from '../src/features/pokedex/actions/release-pokemon-action'
