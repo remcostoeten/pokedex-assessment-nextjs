@@ -1,28 +1,28 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { capturePokemonMutation } = vi.hoisted(() => ({
-	capturePokemonMutation: vi.fn()
+const { mutationSpy } = vi.hoisted(() => ({
+	mutationSpy: vi.fn()
 }))
 
-vi.mock('../src/features/pokedex/mutations/capture-pokemon-mutation', () => ({
-	capturePokemonMutation
+vi.mock('../src/shared/create-mutation', () => ({
+	createMutation: vi.fn(() => mutationSpy)
 }))
 
 import { capturePokemonAction } from '../src/features/pokedex/actions/capture-pokemon-action'
 
 describe('capturePokemonAction', () => {
 	beforeEach(() => {
-		capturePokemonMutation.mockReset()
+		mutationSpy.mockReset()
 	})
 
 	it('completes when the mutation succeeds', async () => {
-		capturePokemonMutation.mockResolvedValue({ ok: true, data: [] })
+		mutationSpy.mockResolvedValue({ ok: true, data: [] })
 
 		await expect(capturePokemonAction(25)).resolves.toBeUndefined()
 	})
 
 	it('throws for unexpected mutation failures', async () => {
-		capturePokemonMutation.mockResolvedValue({
+		mutationSpy.mockResolvedValue({
 			ok: false,
 			error: 'Service unavailable'
 		})

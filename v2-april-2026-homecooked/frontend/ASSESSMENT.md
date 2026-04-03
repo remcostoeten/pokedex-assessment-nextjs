@@ -26,7 +26,6 @@ This is a toned-down version of how I usually structure applications:
 
 - I kept the solution intentionally lightweight and minimal in dependencies.
 - The tests focus on the most important shared logic and the capture and release action flow.
-- I deliberately kept the scope narrow so the implementation stays easy to review and reason about.
 - With more time, I would add a broader showcase of the Pokemon API and improve interactivity through `{id}` pages, better filtering, search, animations, and so forth.
 
 Kind regards,

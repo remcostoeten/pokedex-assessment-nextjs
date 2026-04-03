@@ -9,9 +9,12 @@ export const getPokedex = createQuery<CaughtPokemon[]>(() => {
 	}
 
 	return PokemonClient().get(
-		'/api/pokemon/pokedex', {}, {
-		next: {
-			tags: ['pokemon:pokedex']
+		'/api/pokemon/pokedex',
+		{},
+		{
+			next: {
+				tags: ['pokemon:pokedex']
+			}
 		}
-	})
+	)
 })

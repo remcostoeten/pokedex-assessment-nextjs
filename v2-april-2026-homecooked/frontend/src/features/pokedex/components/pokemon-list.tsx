@@ -29,6 +29,7 @@ export function PokemonList({
 	const router = useRouter()
 	const [clientPokedex, setClientPokedex] = useState(pokedex)
 	const [pendingPokemonId, setPendingPokemonId] = useState<number | null>(null)
+	const [feedbackPokemonId, setFeedbackPokemonId] = useState<number | null>(null)
 	const [filter, setFilter] = useState<PokedexFilter>('all')
 	const [sortMode, setSortMode] = useState<PokedexSortMode>('caught-first')
 	const caughtIds = new Set(clientPokedex.map((p) => p.id))
@@ -62,6 +63,20 @@ export function PokemonList({
 			window.localStorage.removeItem('pokedex-demo')
 		}
 	}, [staticDemo])
+
+	useEffect(() => {
+		if (feedbackPokemonId === null) {
+			return
+		}
+
+		const timeoutId = window.setTimeout(() => {
+			setFeedbackPokemonId((currentId) =>
+				currentId === feedbackPokemonId ? null : currentId
+			)
+		}, 360)
+
+		return () => window.clearTimeout(timeoutId)
+	}, [feedbackPokemonId])
 
 	const sortedPokemon = pokemon.slice().sort((left, right) => {
 		if (sortMode === 'caught-first') {
@@ -111,6 +126,8 @@ export function PokemonList({
 			return
 		}
 
+		setFeedbackPokemonId(p.id)
+
 		if (staticDemo) {
 			const nextPokedex = [...clientPokedex, { id: p.id, name: p.name }]
 			setClientPokedex(nextPokedex)
@@ -147,6 +164,8 @@ export function PokemonList({
 		if (!releasedPokemon) {
 			return
 		}
+
+		setFeedbackPokemonId(id)
 
 		if (staticDemo) {
 			const nextPokedex = clientPokedex.filter((pokemonEntry) => pokemonEntry.id !== id)
@@ -192,6 +211,8 @@ export function PokemonList({
 			<ul className="flex flex-col gap-3">
 				{visiblePokemon.map((p) => {
 					const isCaught = caughtIds.has(p.id)
+					const isPending = pendingPokemonId === p.id
+					const hasFeedback = feedbackPokemonId === p.id
 					const typeNames = p.types
 						.slice()
 						.sort((a, b) => a.slot - b.slot)
@@ -201,7 +222,9 @@ export function PokemonList({
 					return (
 						<li
 							key={p.id}
-							className="flex flex-col gap-4 rounded-base border border-border bg-surface px-4 py-4 shadow-card sm:flex-row sm:items-center sm:justify-between"
+							className={`flex flex-col gap-4 rounded-base border border-border bg-surface px-4 py-4 shadow-card transition-opacity sm:flex-row sm:items-center sm:justify-between ${
+								isPending ? 'opacity-70' : ''
+							} ${hasFeedback ? 'animate-feedback-flash' : ''}`}
 						>
 							<div className="min-w-0">
 								<div className="flex items-center gap-3">
@@ -223,16 +246,23 @@ export function PokemonList({
 
 							<button
 								type="button"
-								className={`min-w-28 rounded-md border px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+								className={`min-w-28 rounded-md border px-3 py-2 text-sm font-medium transition-[transform,colors,box-shadow] duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 ${
 									isCaught
 										? 'border-danger/20 bg-danger/8 text-danger hover:bg-danger/12'
 										: 'border-border-hover bg-surface-elevated text-foreground hover:bg-surface-hover'
 								}`}
 								onClick={() => (isCaught ? handleRelease(p.id) : handleCapture(p))}
-								disabled={pendingPokemonId === p.id}
+								disabled={isPending}
+								aria-busy={isPending}
 								id={`action-${p.id}`}
 							>
-								{isCaught ? 'Release' : 'Capture'}
+								{isPending
+									? isCaught
+										? 'Releasing...'
+										: 'Capturing...'
+									: isCaught
+										? 'Release'
+										: 'Capture'}
 							</button>
 						</li>
 					)

@@ -17,7 +17,10 @@ describe('createMutation', () => {
 
 	it('returns action data and revalidates every provided tag', async () => {
 		const action = vi.fn().mockResolvedValue({ id: 25 })
-		const mutation = createMutation<number, { id: number }>(['pokemon:list', 'pokemon:pokedex'], action)
+		const mutation = createMutation<number, { id: number }>(
+			['pokemon:list', 'pokemon:pokedex'],
+			action
+		)
 
 		const result = await mutation(25)
 

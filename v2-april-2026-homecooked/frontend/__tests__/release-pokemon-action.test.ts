@@ -1,28 +1,28 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { releasePokemonMutation } = vi.hoisted(() => ({
-	releasePokemonMutation: vi.fn()
+const { mutationSpy } = vi.hoisted(() => ({
+	mutationSpy: vi.fn()
 }))
 
-vi.mock('../src/features/pokedex/mutations/release-pokemon-mutation', () => ({
-	releasePokemonMutation
+vi.mock('../src/shared/create-mutation', () => ({
+	createMutation: vi.fn(() => mutationSpy)
 }))
 
 import { releasePokemonAction } from '../src/features/pokedex/actions/release-pokemon-action'
 
 describe('releasePokemonAction', () => {
 	beforeEach(() => {
-		releasePokemonMutation.mockReset()
+		mutationSpy.mockReset()
 	})
 
 	it('completes when the mutation succeeds', async () => {
-		releasePokemonMutation.mockResolvedValue({ ok: true, data: [] })
+		mutationSpy.mockResolvedValue({ ok: true, data: [] })
 
 		await expect(releasePokemonAction(25)).resolves.toBeUndefined()
 	})
 
 	it('throws when the mutation fails', async () => {
-		releasePokemonMutation.mockResolvedValue({
+		mutationSpy.mockResolvedValue({
 			ok: false,
 			error: 'DELETE /api/pokemon/25/pokedex → 404 '
 		})

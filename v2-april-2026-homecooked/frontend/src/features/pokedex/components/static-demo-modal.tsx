@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 const STORAGE_KEY = 'static-demo-modal-dismissed'
 const README_URL =
-	'https://github.com/remcostoeten/acme-test-pokemon-dotnet-api-interview-assesment/blob/v2/frontend/README.md'
+	'https://github.com/remcostoeten/acme-test-pokemon-dotnet-api-interview-assesment'
 
 type StaticDemoModalProps = {
 	staticDemo: boolean
@@ -40,11 +40,13 @@ export function StaticDemoModal({ staticDemo }: StaticDemoModalProps) {
 			<div className="w-full max-w-md rounded-base border border-border bg-surface p-5 shadow-card">
 				<div className="flex items-start justify-between gap-4">
 					<div>
-						<h2 className="text-base font-semibold text-foreground">Static demo mode</h2>
+						<h2 className="text-base font-semibold text-foreground">
+							Static demo mode
+						</h2>
 						<p className="mt-2 text-sm leading-6 text-foreground-muted">
-							This deployment runs from static JSON in <code>public/api</code>. Capture and
-							release still work, but the Pokédex is stored in your browser instead of the
-							.NET API.
+							This deployment runs from static JSON in <code>public/api</code>.
+							Capture and release still work, but the Pokédex is stored in your
+							browser instead of the .NET API.
 						</p>
 					</div>
 

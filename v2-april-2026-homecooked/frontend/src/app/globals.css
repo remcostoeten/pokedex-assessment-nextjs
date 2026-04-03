@@ -12,6 +12,8 @@
 	--color-foreground-dim: #55556a;
 	--color-accent: #6366f1;
 	--color-accent-glow: rgba(99, 102, 241, 0.3);
+	--color-focus-ring: rgba(129, 140, 248, 0.45);
+	--color-focus: rgb(129, 146, 248, 0.11);
 	--color-danger: #ef4444;
 	--color-danger-glow: rgba(239, 68, 68, 0.3);
 	--color-success: #22c55e;
@@ -21,9 +23,11 @@
 
 	--shadow-card: 0 2px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--color-border);
 	--shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--color-border-hover);
+	--shadow-focus: 0 0 0 1.5px var(--color-focus-ring);
 
 	--animate-pulse-slow: pulse-slow 2s ease-in-out infinite;
 	--animate-shimmer: shimmer 1.5s ease-in-out infinite;
+	--animate-feedback-flash: feedback-flash 360ms cubic-bezier(0.16, 1, 0.3, 1);
 
 	@keyframes pulse-slow {
 		0%,
@@ -43,6 +47,30 @@
 			background-position: -200% 0;
 		}
 	}
+
+	@keyframes feedback-flash {
+		0% {
+			transform: scale(1);
+			box-shadow:
+				0 2px 20px rgba(0, 0, 0, 0.3),
+				0 0 0 1px var(--color-border),
+				0 0 0 0 rgba(129, 146, 248, 0);
+		}
+		40% {
+			transform: scale(1.01);
+			box-shadow:
+				0 8px 30px rgba(0, 0, 0, 0.36),
+				0 0 0 1px var(--color-border-hover),
+				0 0 0 6px rgba(129, 146, 248, 0.12);
+		}
+		100% {
+			transform: scale(1);
+			box-shadow:
+				0 2px 20px rgba(0, 0, 0, 0.3),
+				0 0 0 1px var(--color-border),
+				0 0 0 0 rgba(129, 146, 248, 0);
+		}
+	}
 }
 
 @layer base {
@@ -56,6 +84,14 @@
 		font-family: var(--font-geist-sans), system-ui, sans-serif;
 		font-feature-settings: 'ss01', 'ss02', 'cv01', 'cv02';
 	}
+
+	:where(a, button, input, select, textarea, summary, [role='button'], [tabindex]):focus {
+		outline: none;
+	}
+
+	:where(a, button, input, select, textarea, summary, [role='button'], [tabindex]):focus-visible {
+		box-shadow: var(--shadow-focus);
+	}
 }
 
 @layer utilities {
@@ -67,5 +103,15 @@
 			var(--color-surface-elevated) 75%
 		);
 		background-size: 200% 100%;
+	}
+
+	.animate-feedback-flash {
+		animation: var(--animate-feedback-flash);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.animate-feedback-flash {
+			animation: none;
+		}
 	}
 }
