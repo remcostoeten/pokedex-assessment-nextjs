@@ -1,9 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useOptimistic, useRef, useTransition } from 'react'
+import { useEffect, useState } from 'react'
 
-import { PokedexToolbar } from '@/features/pokedex/components/pokedex-toolbar'
+import {
+	PokedexToolbar,
+	type PokedexFilter,
+	type PokedexSortMode
+} from '@/features/pokedex/components/pokedex-toolbar'
 import type { Pokemon, CaughtPokemon } from '@/features/pokedex/types'
 
 type PokemonListProps = {
@@ -20,63 +24,115 @@ export function PokemonList({
 	releasePokemon
 }: PokemonListProps) {
 	const router = useRouter()
-	const refreshTimeoutRef = useRef<number | null>(null)
-	const [optimisticPokedex, setOptimisticPokedex] = useOptimistic<
-		CaughtPokemon[],
-		{ type: 'capture' | 'release'; pokemonId: number; pokemonName?: string }
-	>(pokedex, (state, action) => {
-		if (action.type === 'capture') {
-			return [...state, { id: action.pokemonId, name: action.pokemonName ?? '' }]
-		} else {
-			return state.filter((p) => p.id !== action.pokemonId)
-		}
-	})
-
-	const [isPending, startTransition] = useTransition()
-	const caughtIds = new Set(optimisticPokedex.map((p) => p.id))
-	const capturedCount = optimisticPokedex.length
+	const [clientPokedex, setClientPokedex] = useState(pokedex)
+	const [pendingPokemonId, setPendingPokemonId] = useState<number | null>(null)
+	const [filter, setFilter] = useState<PokedexFilter>('all')
+	const [sortMode, setSortMode] = useState<PokedexSortMode>('caught-first')
+	const caughtIds = new Set(clientPokedex.map((p) => p.id))
+	const capturedCount = clientPokedex.length
 	const totalCount = pokemon.length
 	const remainingCount = totalCount - capturedCount
 	const completion = totalCount === 0 ? 0 : Math.round((capturedCount / totalCount) * 100)
 
-	const handleCapture = (p: Pokemon) => {
-		startTransition(async () => {
-			setOptimisticPokedex({ type: 'capture', pokemonId: p.id, pokemonName: p.name })
-			try {
-				await capturePokemon(p.id)
-			} catch (error) {
-				console.error(error)
-			} finally {
-				if (refreshTimeoutRef.current !== null) {
-					window.clearTimeout(refreshTimeoutRef.current)
-				}
+	useEffect(() => {
+		setClientPokedex(pokedex)
+	}, [pokedex])
 
-				refreshTimeoutRef.current = window.setTimeout(() => {
-					router.refresh()
-					refreshTimeoutRef.current = null
-				}, 320)
+	const sortedPokemon = pokemon.slice().sort((left, right) => {
+		if (sortMode === 'caught-first') {
+			const leftCaught = caughtIds.has(left.id)
+			const rightCaught = caughtIds.has(right.id)
+
+			if (leftCaught !== rightCaught) {
+				return leftCaught ? -1 : 1
 			}
-		})
+		}
+
+		return left.id - right.id
+	})
+
+	const visiblePokemon = sortedPokemon.filter((pokemonEntry) => {
+		const isCaught = caughtIds.has(pokemonEntry.id)
+
+		if (filter === 'caught') {
+			return isCaught
+		}
+
+		if (filter === 'uncaught') {
+			return !isCaught
+		}
+
+		return true
+	})
+
+	function handleFilterChange(nextFilter: PokedexFilter) {
+		if (nextFilter === filter || pendingPokemonId !== null) {
+			return
+		}
+
+		setFilter(nextFilter)
 	}
 
-	const handleRelease = (id: number) => {
-		startTransition(async () => {
-			setOptimisticPokedex({ type: 'release', pokemonId: id })
-			try {
-				await releasePokemon(id)
-			} catch (error) {
-				console.error(error)
-			} finally {
-				if (refreshTimeoutRef.current !== null) {
-					window.clearTimeout(refreshTimeoutRef.current)
-				}
+	function handleSortModeChange(nextSortMode: PokedexSortMode) {
+		if (nextSortMode === sortMode || pendingPokemonId !== null) {
+			return
+		}
 
-				refreshTimeoutRef.current = window.setTimeout(() => {
-					router.refresh()
-					refreshTimeoutRef.current = null
-				}, 320)
-			}
-		})
+		setSortMode(nextSortMode)
+	}
+
+	function handleCapture(p: Pokemon) {
+		if (caughtIds.has(p.id) || pendingPokemonId !== null) {
+			return
+		}
+
+		setPendingPokemonId(p.id)
+
+		setClientPokedex((currentPokedex) => [...currentPokedex, { id: p.id, name: p.name }])
+
+		void capturePokemon(p.id)
+			.catch((error) => {
+				console.error(error)
+				setClientPokedex((currentPokedex) =>
+					currentPokedex.filter((pokemonEntry) => pokemonEntry.id !== p.id)
+				)
+				router.refresh()
+			})
+			.finally(() => {
+				setPendingPokemonId((currentPendingId) =>
+					currentPendingId === p.id ? null : currentPendingId
+				)
+			})
+	}
+
+	function handleRelease(id: number) {
+		if (!caughtIds.has(id) || pendingPokemonId !== null) {
+			return
+		}
+
+		const releasedPokemon = clientPokedex.find((pokemonEntry) => pokemonEntry.id === id)
+
+		if (!releasedPokemon) {
+			return
+		}
+
+		setPendingPokemonId(id)
+
+		setClientPokedex((currentPokedex) =>
+			currentPokedex.filter((pokemonEntry) => pokemonEntry.id !== id)
+		)
+
+		void releasePokemon(id)
+			.catch((error) => {
+				console.error(error)
+				setClientPokedex((currentPokedex) => [...currentPokedex, releasedPokemon])
+				router.refresh()
+			})
+			.finally(() => {
+				setPendingPokemonId((currentPendingId) =>
+					currentPendingId === id ? null : currentPendingId
+				)
+			})
 	}
 
 	return (
@@ -86,10 +142,14 @@ export function PokemonList({
 				totalCount={totalCount}
 				remainingCount={remainingCount}
 				completion={completion}
+				filter={filter}
+				onFilterChange={handleFilterChange}
+				sortMode={sortMode}
+				onSortModeChange={handleSortModeChange}
 			/>
 
 			<ul className="flex flex-col gap-3">
-				{pokemon.map((p) => {
+				{visiblePokemon.map((p) => {
 					const isCaught = caughtIds.has(p.id)
 					const typeNames = p.types
 						.slice()
@@ -128,7 +188,7 @@ export function PokemonList({
 										: 'border-border-hover bg-surface-elevated text-foreground hover:bg-surface-hover'
 								}`}
 								onClick={() => (isCaught ? handleRelease(p.id) : handleCapture(p))}
-								disabled={isPending}
+								disabled={pendingPokemonId === p.id}
 								id={`action-${p.id}`}
 							>
 								{isCaught ? 'Release' : 'Capture'}
