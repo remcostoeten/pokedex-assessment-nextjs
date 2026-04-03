@@ -1,11 +1,11 @@
 'use server'
 
-import type { CaughtPokemon } from '@/features/pokedex/types'
+import type { TCaught } from '@/features/pokedex/types'
 import { createMutation } from '@/shared/create-mutation'
 
 import { PokemonClient } from '../api/client'
 
-const releasePokemonMutation = createMutation<number, CaughtPokemon[]>('pokemon:pokedex', (id) =>
+const releasePokemonMutation = createMutation<number, TCaught[]>('pokemon:pokedex', (id) =>
 	PokemonClient().destroy(`/api/pokemon/${id}/pokedex`)
 )
 

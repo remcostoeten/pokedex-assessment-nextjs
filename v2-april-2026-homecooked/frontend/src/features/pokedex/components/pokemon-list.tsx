@@ -9,11 +9,11 @@ import {
 	type PokedexSortMode
 } from '@/features/pokedex/components/pokedex-toolbar'
 import { StaticDemoModal } from '@/features/pokedex/components/static-demo-modal'
-import type { Pokemon, CaughtPokemon } from '@/features/pokedex/types'
+import type { TCaught, TPokemon } from '@/features/pokedex/types'
 
 type PokemonListProps = {
-	pokemon: Pokemon[]
-	pokedex: CaughtPokemon[]
+	pokemon: TPokemon[]
+	pokedex: TCaught[]
 	capturePokemon: (id: number) => Promise<void>
 	releasePokemon: (id: number) => Promise<void>
 	staticDemo: boolean
@@ -58,7 +58,7 @@ export function PokemonList({
 		}
 
 		try {
-			setClientPokedex(JSON.parse(storedPokedex) as CaughtPokemon[])
+			setClientPokedex(JSON.parse(storedPokedex) as TCaught[])
 		} catch {
 			window.localStorage.removeItem('pokedex-demo')
 		}
@@ -121,7 +121,7 @@ export function PokemonList({
 		setSortMode(nextSortMode)
 	}
 
-	function handleCapture(p: Pokemon) {
+	function handleCapture(p: TPokemon) {
 		if (caughtIds.has(p.id) || pendingPokemonId !== null) {
 			return
 		}

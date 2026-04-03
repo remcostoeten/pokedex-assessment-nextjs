@@ -1,11 +1,11 @@
 import { PokemonClient } from '@/features/pokedex/api/client'
 import { isStaticPokedexDemo, readStaticDemoJson } from '@/features/pokedex/lib/static-demo'
-import type { Pokemon } from '@/features/pokedex/types'
+import type { TPokemon } from '@/features/pokedex/types'
 import { createQuery } from '@/shared/create-query'
 
-export const getPokemon = createQuery<Pokemon[]>(() => {
+export const getPokemon = createQuery<TPokemon[]>(() => {
 	if (isStaticPokedexDemo()) {
-		return readStaticDemoJson<Pokemon[]>('api/pokemon.json')
+		return readStaticDemoJson<TPokemon[]>('api/pokemon.json')
 	}
 
 	return PokemonClient().get(
