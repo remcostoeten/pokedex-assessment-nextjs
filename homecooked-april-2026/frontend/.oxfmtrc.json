@@ -1,0 +1,23 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"semi": false,
+	"singleQuote": true,
+	"tabWidth": 4,
+	"useTabs": true,
+	"trailingComma": "none",
+	"endOfLine": "lf",
+	"insertFinalNewline": true,
+	"sortImports": {
+		"groups": [
+			"builtin",
+			"external",
+			["internal", "subpath"],
+			["parent", "sibling", "index"],
+			"style",
+			"unknown"
+		],
+		"newlinesBetween": true,
+		"order": "asc",
+		"ignoreCase": true
+	}
+}

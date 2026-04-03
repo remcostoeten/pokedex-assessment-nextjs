@@ -1,0 +1,28 @@
+{
+	"editor.defaultFormatter": "oxc.oxfmt",
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": "always",
+		"source.organizeImports": "always"
+	},
+	"editor.tabSize": 4,
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"[typescript]": {
+		"editor.defaultFormatter": "oxc.oxfmt"
+	},
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "oxc.oxfmt"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "oxc.oxfmt"
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "oxc.oxfmt"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "oxc.oxfmt"
+	},
+	"oxlint.enable": true,
+	"oxfmt.enable": true
+}
