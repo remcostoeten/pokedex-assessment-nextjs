@@ -1,0 +1,7 @@
+{
+  "bunVersion": "1.x",
+  "framework": "nextjs",
+  "installCommand": "bun install && cd v2-april-2026-homecooked/frontend && bun install",
+  "buildCommand": "cd v2-april-2026-homecooked/frontend && bun --bun next build",
+  "outputDirectory": "v2-april-2026-homecooked/frontend/.next"
+}
