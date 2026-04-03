@@ -8,6 +8,7 @@ import {
 	type PokedexFilter,
 	type PokedexSortMode
 } from '@/features/pokedex/components/pokedex-toolbar'
+import { StaticDemoModal } from '@/features/pokedex/components/static-demo-modal'
 import type { Pokemon, CaughtPokemon } from '@/features/pokedex/types'
 
 type PokemonListProps = {
@@ -15,13 +16,15 @@ type PokemonListProps = {
 	pokedex: CaughtPokemon[]
 	capturePokemon: (id: number) => Promise<void>
 	releasePokemon: (id: number) => Promise<void>
+	staticDemo: boolean
 }
 
 export function PokemonList({
 	pokemon,
 	pokedex,
 	capturePokemon,
-	releasePokemon
+	releasePokemon,
+	staticDemo
 }: PokemonListProps) {
 	const router = useRouter()
 	const [clientPokedex, setClientPokedex] = useState(pokedex)
@@ -35,8 +38,30 @@ export function PokemonList({
 	const completion = totalCount === 0 ? 0 : Math.round((capturedCount / totalCount) * 100)
 
 	useEffect(() => {
+		if (staticDemo) {
+			return
+		}
+
 		setClientPokedex(pokedex)
-	}, [pokedex])
+	}, [pokedex, staticDemo])
+
+	useEffect(() => {
+		if (!staticDemo) {
+			return
+		}
+
+		const storedPokedex = window.localStorage.getItem('pokedex-demo')
+
+		if (!storedPokedex) {
+			return
+		}
+
+		try {
+			setClientPokedex(JSON.parse(storedPokedex) as CaughtPokemon[])
+		} catch {
+			window.localStorage.removeItem('pokedex-demo')
+		}
+	}, [staticDemo])
 
 	const sortedPokemon = pokemon.slice().sort((left, right) => {
 		if (sortMode === 'caught-first') {
@@ -86,6 +111,13 @@ export function PokemonList({
 			return
 		}
 
+		if (staticDemo) {
+			const nextPokedex = [...clientPokedex, { id: p.id, name: p.name }]
+			setClientPokedex(nextPokedex)
+			window.localStorage.setItem('pokedex-demo', JSON.stringify(nextPokedex))
+			return
+		}
+
 		setPendingPokemonId(p.id)
 
 		setClientPokedex((currentPokedex) => [...currentPokedex, { id: p.id, name: p.name }])
@@ -116,6 +148,13 @@ export function PokemonList({
 			return
 		}
 
+		if (staticDemo) {
+			const nextPokedex = clientPokedex.filter((pokemonEntry) => pokemonEntry.id !== id)
+			setClientPokedex(nextPokedex)
+			window.localStorage.setItem('pokedex-demo', JSON.stringify(nextPokedex))
+			return
+		}
+
 		setPendingPokemonId(id)
 
 		setClientPokedex((currentPokedex) =>
@@ -137,6 +176,8 @@ export function PokemonList({
 
 	return (
 		<div className="flex flex-col gap-3">
+			<StaticDemoModal staticDemo={staticDemo} />
+
 			<PokedexToolbar
 				capturedCount={capturedCount}
 				totalCount={totalCount}
